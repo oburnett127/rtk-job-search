@@ -1,34 +1,38 @@
-import { Link } from 'react-router-dom';
 import React, { useState, useEffect, useContext } from 'react';
-import classes from './AuthForm.module.css';
-import { useQuery } from 'react-query';
-import axios from 'axios';
-import { UserContext } from './UserContext';
+import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
+import { useDispatch, useSelector } from 'react-redux';
+import { loginUser, registerUser, fetchEmployerList, selectEmployerList } from '../reducers/authSlice'
+import classes from './AuthForm.module.css';
   
 function AuthForm() {
-    const { setUser, setIsLoggedIn } = useContext(UserContext);
     const [isLogin, setIsLogin] = useState('login');
     const [isEmployer, setIsEmployer] = useState(false);
     const [message, setMessage] = useState('');
     const [employerName, setEmployerName] = useState(localStorage.getItem('employerName') || '');
+    const authStatus = useSelector((state) => state.auth.status);
+    const authError = useSelector((state) => state.auth.error);
 
-    const {register, handleSubmit, formState: {errors}} = useForm();
+    const { register, handleSubmit } = useForm();
 
-    const { data: empList } = useQuery('employerList',
-        () => { return axios.get(process.env.REACT_APP_SERVER_URL + '/employer/list')});
+    const dispatch = useDispatch();
+    const employerList = useSelector(selectEmployerList);
 
-    const options = empList?.data?.map((employer) => (
+    useEffect(() => {
+        dispatch(fetchEmployerList());
+      }, [dispatch]);
+
+    const options = employerList.map((employer) => (
         <option key={employer.id} value={JSON.stringify(employer)}>
-            {employer.name}
+          {employer.name}
         </option>
-    ));
+      ));
     
     useEffect(() => {
         localStorage.setItem('employerName', employerName);
     }, [employerName]);
 
-    const onSubmit = async (data) => {
+    const onSubmit = (data) => {
         try {
             setMessage('');
             //console.log("line 1");
@@ -109,6 +113,7 @@ function AuthForm() {
             }
 
             const resData = await response.json();
+            
             const token = resData.token;
 
             localStorage.setItem('token', token);
@@ -118,8 +123,6 @@ function AuthForm() {
 
             setMessage('Log in or sign up was successful');
             setIsLoggedIn(true);
-
-            //console.log("setting isLoggedIn to true");
 
             try {
                 const response = await fetch(process.env.REACT_APP_SERVER_URL + `/auth/getuser/${data.email}`);
@@ -192,3 +195,8 @@ function AuthForm() {
 }
   
 export default AuthForm;
+
+// if(data.compName === '' && data.employerSelect === '' ) {
+//     setMessage('You must either select an employer name or enter a new employer name.');
+//     throw new Error('The user must enter an employer name.');
+// }
