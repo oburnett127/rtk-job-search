@@ -1,12 +1,13 @@
-import React, { useState, useContext } from 'react';
+import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { UserContext } from './UserContext';
+import { useSelector } from 'react-redux';
 
 const JobApplyForm = ({ job }) => {
 
     const navigate = useNavigate();
     const [message, setMessage] = useState('');
-    const { user } = useContext(UserContext);
+    
+    const user = useSelector((store) => store.auth.user);
 
     const handleSubmit = (e) => {
         e.preventDefault();

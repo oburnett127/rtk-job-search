@@ -1,12 +1,11 @@
-import React, { useContext } from 'react';
-import { UserContext } from '../components/UserContext';
+import { useSelector } from 'react-redux';
 import PageContent from '../components/PageContent';
 import {Link} from 'react-router-dom';
 import classes from './Home.module.css';
 
 function HomePage() {
-  const { isLoggedIn } = useContext(UserContext);
-  const { user } = useContext(UserContext);
+  const user = useSelector((store) => store.auth.user);
+  const isLoggedIn = useSelector((store) => store.auth.isLoggedIn);
 
   return (
     <PageContent title="Welcome!">

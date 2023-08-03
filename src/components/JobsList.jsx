@@ -1,7 +1,6 @@
-import React, { useContext } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import { Link } from 'react-router-dom';
-import { UserContext } from './UserContext';
+import { useSelector } from 'react-redux';
 import { useQuery } from 'react-query';
 import axios from 'axios';
 import DoneOutlineIcon from '@mui/icons-material/DoneOutline';
@@ -11,7 +10,7 @@ function JobsList({jobs}) {
 
     //console.log(jobs);
 
-    const { user } = useContext(UserContext);
+    const user = useSelector((store) => store.auth.user);
 
     const { data: applications } = useQuery('applications',
       () => { return axios.get(process.env.REACT_APP_SERVER_URL + `/application/getbyapplicantid/${user.id}`);}

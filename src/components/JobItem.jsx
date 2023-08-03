@@ -1,14 +1,13 @@
-import { React, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import classes from './JobItem.module.css';
 import CheckIcon from '@mui/icons-material/Check';
 import EditIcon from "@mui/icons-material/Edit";
 import ClearIcon from "@mui/icons-material/Clear";
-import { UserContext } from "./UserContext";
+import { useSelector } from 'react-redux';
 
 function JobItem({ job }) {
-    const { user } = useContext(UserContext);
-    const userRole = user.role;
+    const user = useSelector((store) => store.auth.user);
+    const userRole = user?.role;
 
     // console.log("user.empId: " + user?.employerId);
     // console.log("job.empId: " + job.employerId);

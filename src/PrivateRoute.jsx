@@ -1,8 +1,9 @@
-import { useEffect, useState, useContext } from "react";
-import { UserContext } from "./components/UserContext";
+import { useEffect, useState } from "react";
+import { useSelector } from "react-redux";
 
 const PrivateRoute = ({ isLoggedIn, roleReq, children }) => {
-    const { user } = useContext(UserContext);
+
+    const user = useSelector((store) => store.auth.user);
 
     const authorize = () => {
         setLoading(true);

@@ -1,4 +1,3 @@
-import React, { useState } from 'react';
 import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from 'react-router-dom';
 import ApplyJobPage from './pages/ApplyJob';
 import UpdateJobPage from './pages/UpdateJob';
@@ -12,14 +11,13 @@ import DeleteJobPage from './pages/DeleteJob';
 import AuthenticationPage from './pages/Authentication';
 import LogoutPage from './pages/Logout';
 import NotFoundPage from './pages/NotFound';
-import { UserContext } from './components/UserContext';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import PrivateRoute from './PrivateRoute';
+import { useSelector } from 'react-redux';
 
 function App() {
 
-    const [user, setUser] = useState();
-    const [isLoggedIn, setIsLoggedIn] = useState(false);
+    const isLoggedIn = useSelector((store) => store.auth.isLoggedIn);
 
     const router = createBrowserRouter(
         createRoutesFromElements(
@@ -56,11 +54,9 @@ function App() {
 
     return (
         <QueryClientProvider client={new QueryClient()}>
-            <UserContext.Provider value={{ user, setUser, isLoggedIn, setIsLoggedIn }}>
                 <div className={"App"}>
                     <RouterProvider router={router} />
                 </div>
-            </UserContext.Provider>
         </QueryClientProvider>
     );
 }

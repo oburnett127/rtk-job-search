@@ -29,7 +29,7 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (authData, { d
         throw new Error('Could not authenticate user.');
     }
 
-    dispatchEvent(fetchUserDetails(data.email));
+    dispatch(fetchUserDetails(authData.email));
 
     const resData = await response.json();
     return resData;
@@ -48,9 +48,15 @@ export const registerUser = createAsyncThunk('auth/registerUser', async (authDat
         throw new Error('Could not register user.');
     }
 
-    dispatch(fetchUserDetails(data.email));
+    dispatch(fetchUserDetails(authData.email));
 
     const resData = await response.json();
+    const token = resData.token;
+    localStorage.setItem('token', token);
+    const expiration = new Date();
+    expiration.setHours(expiration.getHours() + 2);
+    localStorage.setItem('expiration', expiration.toISOString());
+    
     return resData;
 });
 

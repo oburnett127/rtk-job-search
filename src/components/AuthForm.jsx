@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { useDispatch, useSelector } from 'react-redux';
@@ -42,14 +42,10 @@ function AuthForm() {
                 password: data.password
             };
 
-            let url = '';
-
             if(isLogin === 'login') {
-                url = process.env.REACT_APP_SERVER_URL + '/auth/login';
+                dispatch(loginUser(authData));
             } else {
-                url = process.env.REACT_APP_SERVER_URL + '/auth/signup';
-
-                console.log("line 2");
+                //console.log("line 2");
 
                 if(isEmployer) {
                     let empJson = '';
@@ -86,58 +82,26 @@ function AuthForm() {
                         isEmployer: false
                     };
                 }
+
+                dispatch(registerUser(authData));
             }
 
-            //console.log("line 6");
-            const response = await fetch(url, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(authData),
-            });
-
-            if (isLogin !== 'login' && response.status === 409) {
-                //console.log("line 8");
-                setMessage('The email address you entered is already taken. Please enter a different email.');
-                throw new Error('The email address you entered is already taken. Please enter a different email.');
-            }
+            // if (isLogin !== 'login' && response.status === 409) {
+            //     //console.log("line 8");
+            //     setMessage('The email address you entered is already taken. Please enter a different email.');
+            //     throw new Error('The email address you entered is already taken. Please enter a different email.');
+            // }
 
             //console.log("isLogin: " + isLogin);
             //console.log("response.status: " + response.status);
 
-            if (!response.ok) {
-                //console.log("line 9");
-                setMessage('Log in or registration failed');
-                throw new Error('Could not authenticate user.');
-            }
+            // if (!response.ok) {
+            //     //console.log("line 9");
+            //     setMessage('Log in or registration failed');
+            //     throw new Error('Could not authenticate user.');
+            // }
 
-            const resData = await response.json();
-            
-            const token = resData.token;
-
-            localStorage.setItem('token', token);
-            const expiration = new Date();
-            expiration.setHours(expiration.getHours() + 2);
-            localStorage.setItem('expiration', expiration.toISOString());
-
-            setMessage('Log in or sign up was successful');
-            setIsLoggedIn(true);
-
-            try {
-                const response = await fetch(process.env.REACT_APP_SERVER_URL + `/auth/getuser/${data.email}`);
-                const user = await response.json();
-                setUser(user);
-                console.log("userId is: " + user.id);
-            } catch (error) {
-                if (error.response) {
-                    console.log(error.response);
-                } else if (error.request) {
-                    console.log("network error");
-                } else {
-                    console.log(error);
-                }
-            }
+            //const resData = await response.json();
         } catch(err) {
             //console.log("line 10");
             console.log(err);
@@ -151,9 +115,10 @@ function AuthForm() {
     }
  
     return (
-            <form className={classes.form} errors={errors} onSubmit={handleSubmit(onSubmit)}>
+            <form className={classes.form} onSubmit={handleSubmit(onSubmit)}>
                 <h1>{isLogin === 'login' ? 'Log in' : 'Create a new user'}</h1>
                 <p>{message}</p>
+                <p>{authStatus === 'loading' ? 'Loading...' : authError}</p>
                 <p>
                     <label htmlFor="email">Email</label>
                     <input type="email" {...register("email", {required: true})} />
@@ -195,8 +160,3 @@ function AuthForm() {
 }
   
 export default AuthForm;
-
-// if(data.compName === '' && data.employerSelect === '' ) {
-//     setMessage('You must either select an employer name or enter a new employer name.');
-//     throw new Error('The user must enter an employer name.');
-// }

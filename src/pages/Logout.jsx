@@ -1,11 +1,12 @@
-import React, { useContext } from 'react';
-import { UserContext } from '../components/UserContext';
+import { useDispatch } from 'react-redux';
+import { logoutUser } from '../reducers/authSlice';
 
 function LogoutPage() {
-  const { setIsLoggedIn } = useContext(UserContext);
-   
+  
+  const dispatch = useDispatch();
+
   localStorage.removeItem('token');
-  setIsLoggedIn(false); 
+  dispatch(logoutUser());
   
   return (
     <p style={{ textAlign: 'center'}}>You have successfully logged out</p>

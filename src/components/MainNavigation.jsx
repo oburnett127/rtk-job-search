@@ -1,10 +1,10 @@
-import React, { useContext } from 'react';
 import { NavLink } from 'react-router-dom';
-import { UserContext } from './UserContext';
+import { useSelector } from 'react-redux';
 import classes from './MainNavigation.module.css';
 
 function MainNavigation() {
-  const { isLoggedIn } = useContext(UserContext);
+  
+  const isLoggedIn = useSelector((store) => store.auth.isLoggedIn);
 
   return (
     <header className={classes.header}>

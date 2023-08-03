@@ -1,13 +1,13 @@
-import React, { useState, useContext } from 'react';
+import { useState, } from 'react';
 import { useNavigate, useNavigation } from 'react-router-dom';
 import classes from './JobPostForm.module.css';
-import { UserContext } from './UserContext';
+import { useSelector } from 'react-redux';
 import { useForm } from 'react-hook-form';
 
 function JobPostForm({ method }) {
   const navigate = useNavigate();
   const navigation = useNavigation();
-  const { user } = useContext(UserContext);
+  const user = useSelector((store) => store.auth.user);
   const isSubmitting = navigation.state === 'submitting';
   const [message, setMessage] = useState(null);
 
