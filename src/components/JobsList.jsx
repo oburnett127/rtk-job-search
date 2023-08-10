@@ -11,10 +11,16 @@ function JobsList({jobs}) {
     //console.log(jobs);
 
     const user = useSelector((store) => store.auth.user);
+    const jwtToken = localStorage.getItem('jwtToken');
 
     const { data: applications } = useQuery('applications',
-      () => { return axios.get(process.env.REACT_APP_SERVER_URL + `/application/getbyapplicantid/${user.id}`);}
-    );
+      () => { return axios.get(process.env.REACT_APP_SERVER_URL + `/application/getbyapplicantid/${user.id}`, {
+        headers: {
+            'X-XSRF-TOKEN': csrfToken,
+            'Authorization': `Bearer ${jwtToken}`,
+        },
+        credentials: 'include'
+      })});
 
     let jobIds = [];
 

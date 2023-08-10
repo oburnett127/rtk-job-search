@@ -1,16 +1,16 @@
 import { createBrowserRouter, createRoutesFromElements, RouterProvider, Route } from 'react-router-dom';
-import ApplyJobPage from './pages/ApplyJob';
-import UpdateJobPage from './pages/UpdateJob';
-import JobDetailPage from './pages/JobDetail';
-import JobsPage from './pages/Jobs';
+import ApplyJobPage from './pages/ApplyJobPage';
+import UpdateJobPage from './pages/UpdateJobPage';
+import JobDetailPage from './pages/JobDetailPage';
+import JobsPage from './pages/JobsPage';
 import JobsRootLayout from './pages/JobsRoot';
-import HomePage from './pages/Home';
-import NewJobPage from './pages/NewJob';
+import HomePage from './pages/HomePage';
+import NewJobPage from './pages/NewJobPage';
 import RootLayout from './pages/Root';
-import DeleteJobPage from './pages/DeleteJob';
-import AuthenticationPage from './pages/Authentication';
-import LogoutPage from './pages/Logout';
-import NotFoundPage from './pages/NotFound';
+import DeleteJobPage from './pages/DeleteJobPage';
+import AuthenticationPage from './pages/AuthenticationPage';
+import LogoutPage from './pages/LogoutPage';
+import NotFoundPage from './pages/NotFoundPage';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import PrivateRoute from './PrivateRoute';
 import { useSelector } from 'react-redux';
@@ -29,13 +29,13 @@ function App() {
                     <Route index element={<JobsPage />}></Route>
                     <Route path="/jobs/:id" id="job-detail">
                         <Route index element={<JobDetailPage />}></Route>
-                        <Route path="/jobs/:id/apply" element={<ApplyJobPage />}></Route>
-                        <Route path="/jobs/:id/edit" element={
+                        <Route path="apply" element={<ApplyJobPage />}></Route>
+                        <Route path="edit" element={
                             <PrivateRoute isLoggedIn={isLoggedIn} roleReq={"EMPLOYER"}>
                                 <UpdateJobPage />
                             </PrivateRoute>}>
                         </Route>
-                        <Route path="/jobs/:id/delete" element={
+                        <Route path="delete" element={
                             <PrivateRoute isLoggedIn={isLoggedIn} roleReq={"EMPLOYER"}>
                                 <DeleteJobPage />
                             </PrivateRoute>}>

@@ -11,9 +11,19 @@ const JobDeleteForm = (id) => {
 
     console.log(id);
 
+    const jwtToken = localStorage.getItem('jwtToken');
+
     const deleteJob = useMutation(
         async () => {
-            await axios.post(process.env.REACT_APP_SERVER_URL + `/job/delete/${id.id}`);
+            try {
+                await axios.delete(process.env.REACT_APP_SERVER_URL + `/job/delete/${id.id}`, {
+                    headers: {
+                        'Authorization': `Bearer ${jwtToken}`,
+                    },
+                });
+            } catch (error) {
+                throw error;
+            }
         },
         {
             onSuccess: () => {

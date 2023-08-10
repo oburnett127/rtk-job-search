@@ -8,7 +8,7 @@ const PrivateRoute = ({ isLoggedIn, roleReq, children }) => {
     const authorize = () => {
         setLoading(true);
 
-        const userRole = user.role;
+        const userRole = user.roles;
         if(userRole === roleReq) setAuth(true);
         else setAuth(false);
 

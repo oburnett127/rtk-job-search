@@ -85,25 +85,7 @@ function AuthForm() {
 
                 dispatch(registerUser(authData));
             }
-
-            // if (isLogin !== 'login' && response.status === 409) {
-            //     //console.log("line 8");
-            //     setMessage('The email address you entered is already taken. Please enter a different email.');
-            //     throw new Error('The email address you entered is already taken. Please enter a different email.');
-            // }
-
-            //console.log("isLogin: " + isLogin);
-            //console.log("response.status: " + response.status);
-
-            // if (!response.ok) {
-            //     //console.log("line 9");
-            //     setMessage('Log in or registration failed');
-            //     throw new Error('Could not authenticate user.');
-            // }
-
-            //const resData = await response.json();
         } catch(err) {
-            //console.log("line 10");
             console.log(err);
         }
     };

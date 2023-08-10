@@ -22,7 +22,7 @@ function JobsNavigation() {
             </NavLink>
           </li>
           <li>
-          {isLoggedIn && user?.role === 'EMPLOYER' && (
+          {isLoggedIn && user?.roles === 'EMPLOYER' && (
             <NavLink
               to="/jobs/new"
               className={({ isActive }) =>

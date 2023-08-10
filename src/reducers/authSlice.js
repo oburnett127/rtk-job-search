@@ -35,6 +35,20 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (authData, { d
     return resData;
 });
 
+export const logoutUser = createAsyncThunk('auth/logoutUser', async (token, { dispatch }) => {
+    const response = await fetch(process.env.REACT_APP_SERVER_URL + '/auth/logout', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    });
+
+    if (!response.ok) {
+        throw new Error('Could not logout user.');
+    }
+});
+
 export const registerUser = createAsyncThunk('auth/registerUser', async (authData, { dispatch }) => {
     const response = await fetch(process.env.REACT_APP_SERVER_URL + '/auth/signup', {
         method: 'POST',
@@ -70,13 +84,13 @@ const authSlice = createSlice({
         employerList: [],
     },
     reducers: {
-        logoutUser: (state) => {
-            state.user = null;
-            state.isLoggedIn = false;
-        },
     },
     extraReducers: (builder) => {
         builder
+            .addCase(logoutUser.fulfilled, (state, action) => {
+                    state.user = null;
+                    state.isLoggedIn = false;
+            })
             .addCase(loginUser.pending, (state) => {
                 state.status = 'loading';
             })
@@ -110,5 +124,4 @@ const authSlice = createSlice({
     },
 });
 
-export const { logoutUser } = authSlice.actions;
 export default authSlice.reducer;

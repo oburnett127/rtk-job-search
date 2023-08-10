@@ -7,8 +7,14 @@ import JobItem from "../components/JobItem";
 function JobDetailPage() {
     const {id} = useParams();
 
+    const jwtToken = localStorage.getItem('token');
+
     const { isLoading, error, data: jobDetail } = useQuery('jobDetail', () =>
-        axios(process.env.REACT_APP_SERVER_URL + '/job/get/' + id).then((res) => res.data)
+        axios.get(process.env.REACT_APP_SERVER_URL + '/job/get/' + id, {
+            headers: {
+                'Authorization': `Bearer ${jwtToken}`,
+            }
+        })
     );
 
     if (isLoading) return <div>Loading...</div>;

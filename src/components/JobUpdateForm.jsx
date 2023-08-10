@@ -7,34 +7,39 @@ import classes from './JobUpdateForm.module.css';
 
 const JobUpdateForm = ({ job }) => {
     const navigate = useNavigate();
-    const navigation = useNavigation();
-    const queryClient = useQueryClient();
-    const isSubmitting = navigation.state === 'submitting';
     const [message, setMessage] = useState(null);
+    const [isSubmitting, setIsSubmitting] = useState(false);
 
     const {register, handleSubmit, formState: {errors}} = useForm();
+    const jwtToken = localStorage.getItem('jwtToken');
 
-    const { mutate } = useMutation(
-        (updatedJob) => axios.post(process.env.REACT_APP_SERVER_URL + `/job/update/${job.id}`, updatedJob),
-        {
-            onSuccess: () => {
-                queryClient.invalidateQueries("jobs");
-            },
-        }
-    );
+    const onSubmit = async (data) => {
+        const { title, description } = data;
 
-    const onSubmit = (data) => {
-        const title = data.title;
-        const description = data.description;
+        setIsSubmitting(true);
         
         try {
-            mutate({ title, description });
-        } catch(error) {
-            setMessage('Job update failed.');
-            return;
+            const response = await fetch(process.env.REACT_APP_SERVER_URL + `/job/update/${job.id}`, {
+                method: 'POST',
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}`,
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ title, description }),
+            });
+    
+            if(!response.ok) {
+                setMessage('Job update failed.');
+                console.error('Job update failed.');
+            } else {
+                setMessage("Job update was successful.");
+            }
+        } catch (error) {
+            setMessage('Job update failed due to network error.');
+            console.error('Network error:', error);
         }
-
-        setMessage("Job update was successful.");
+    
+        setIsSubmitting(false);
     };
 
     const handleCancel = () => {
