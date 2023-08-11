@@ -1,5 +1,5 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useSelector } from 'react-redux';
 
 const JobApplyForm = () => {
@@ -14,22 +14,23 @@ const JobApplyForm = () => {
     const user = useSelector((store) => store.auth.user);
 
     useEffect(() => {
-        const jwtToken = localStorage.getItem('jwtToken');
-        fetch(process.env.REACT_APP_SERVER_URL + '/job/get/' + id, {
-            method: 'GET',
-            headers: {
-                'Authorization': `Bearer ${jwtToken}`,
-            },
-        })
-        .then(response => {
+        async function fetchData() {
+            const jwtToken = localStorage.getItem('jwtToken');
+            const response = await fetch(process.env.REACT_APP_SERVER_URL + '/job/get/' + id, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}`,
+                },
+            })
+            
             if (!response.ok) {
                 setMessage('An error occurred. Job details could not be retrieved.');
                 throw new Error('Job details could not be retrieved.');
             }
-            return response.json();
-        })
-        .then(data => setJob(data))
-        .catch(error => console.error(error));
+            setJob(await response.json());
+        }
+
+        fetchData();
     }, [id]);
 
     const handleSubmit = async (e) => {
@@ -72,13 +73,13 @@ const JobApplyForm = () => {
         <form onSubmit={handleSubmit}>
             <div>
                 {message}<br />
-                {job.title}
+                {job ? job.title : 'Loading...'}
                 <p>Are you sure you want to apply for this job?</p>
             </div>
             <button type="button" onClick={handleCancel} disabled={isSubmitting}>
                 Cancel
             </button>
-            <button type="submit" onClick={handleSubmit} disabled={isSubmitting}>
+            <button type="submit" disabled={isSubmitting}>
                 Yes
             </button>
         </form>

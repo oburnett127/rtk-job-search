@@ -4,8 +4,17 @@ import { useQuery } from 'react-query';
 import axios from "axios";
 
 function JobsPage() {
+  const jwtToken = localStorage.getItem('jwtToken');
+
+  //console.log('jwtToken: ', jwtToken);
+
   const { data: jobsData, isLoading: isLoadingJobs } = useQuery('jobs',
-      () => { return axios.get(process.env.REACT_APP_SERVER_URL + '/job/list');}
+      () => { return axios.get(process.env.REACT_APP_SERVER_URL + '/job/list', {
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': `Bearer ${jwtToken}`,
+      },
+      });}
   );
 
   const jobs = isLoadingJobs ? [] : jobsData;

@@ -8,10 +8,6 @@ import { useSelector } from 'react-redux';
 function JobItem({ job }) {
     const user = useSelector((store) => store.auth.user);
     const userRoles = user.roles;
-    const jobData = job.data;
-
-    // console.log("user.empId: " + user?.employerId);
-    // console.log("job.empId: " + job.employerId);
 
     return (
         <article className={classes.job}>
@@ -21,16 +17,16 @@ function JobItem({ job }) {
             <p>{job.data.description}</p>
             <menu className={classes.actions}>
                 { 
-                  userRole === 'USER' && (
+                  userRoles === 'USER' && (
                         <Link to={{ pathname: `/jobs/${job.data.id}/apply` }}>
                             <CheckIcon />
                         </Link>
                     )
                 }
                 {
-                  userRoles === 'EMPLOYER' && user?.employerId === job.employerId && (
+                  userRoles === 'EMPLOYER' && user?.employerId === job.data.employerId && (
                     <>
-                        <Link to={{ pathname: `/jobs/${job.data.id}/edit` }} state={{job}}>
+                        <Link to={{ pathname: `/jobs/${job.data.id}/edit` }}>
                                 <EditIcon />
                         </Link>
                         <Link to={{ pathname: `/jobs/${job.data.id}/delete` }}>

@@ -51,11 +51,11 @@ const JobDeleteForm = (id) => {
             <p>{message}</p>
             { !jobDeleted &&
                 <>
-                    <button onClick={handleDelete}>
-                        Yes
-                    </button>
                     <button onClick={handleCancel}>
                         Cancel
+                    </button>
+                    <button onClick={handleDelete}>
+                        Yes
                     </button>
                 </>
             }

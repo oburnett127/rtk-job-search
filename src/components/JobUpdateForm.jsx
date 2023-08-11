@@ -1,17 +1,37 @@
-import React, {useState} from 'react';
-import { useNavigate, useNavigation } from 'react-router-dom';
-import { useMutation, useQueryClient } from "react-query";
-import axios from "axios";
+import { useState, useEffect } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import classes from './JobUpdateForm.module.css';
 
-const JobUpdateForm = ({ job }) => {
+const JobUpdateForm = () => {
     const navigate = useNavigate();
     const [message, setMessage] = useState(null);
     const [isSubmitting, setIsSubmitting] = useState(false);
+    const [job, setJob] = useState(null);
+    const { id } = useParams();
 
     const {register, handleSubmit, formState: {errors}} = useForm();
     const jwtToken = localStorage.getItem('jwtToken');
+
+    useEffect(() => {
+        async function fetchData() {
+            const jwtToken = localStorage.getItem('jwtToken');
+            const response = await fetch(process.env.REACT_APP_SERVER_URL + '/job/get/' + id, {
+                method: 'GET',
+                headers: {
+                    'Authorization': `Bearer ${jwtToken}`,
+                },
+            })
+            
+            if (!response.ok) {
+                setMessage('An error occurred. Job details could not be retrieved.');
+                throw new Error('Job details could not be retrieved.');
+            }
+            setJob(await response.json());
+        }
+
+        fetchData();
+    }, [id]);
 
     const onSubmit = async (data) => {
         const { title, description } = data;
@@ -43,7 +63,7 @@ const JobUpdateForm = ({ job }) => {
     };
 
     const handleCancel = () => {
-        navigate('..');
+        navigate('/jobs');
       }
 
     return (

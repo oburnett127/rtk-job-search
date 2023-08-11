@@ -8,8 +8,7 @@ function LogoutPage() {
   useEffect(() => {
     const handleLogout = async () => {
       try {
-        dispatch(logoutUser(localStorage.getItem('token')));
-  
+        dispatch(logoutUser());
         localStorage.removeItem('token');
       } catch (error) {
         console.log('Error logging out:', error.message);

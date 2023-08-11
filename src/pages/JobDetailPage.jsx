@@ -7,7 +7,7 @@ import JobItem from "../components/JobItem";
 function JobDetailPage() {
     const {id} = useParams();
 
-    const jwtToken = localStorage.getItem('token');
+    const jwtToken = localStorage.getItem('jwtToken');
 
     const { isLoading, error, data: jobDetail } = useQuery('jobDetail', () =>
         axios.get(process.env.REACT_APP_SERVER_URL + '/job/get/' + id, {

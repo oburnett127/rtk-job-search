@@ -29,24 +29,12 @@ export const loginUser = createAsyncThunk('auth/loginUser', async (authData, { d
         throw new Error('Could not authenticate user.');
     }
 
-    dispatch(fetchUserDetails(authData.email));
+    //dispatch(fetchUserDetails(authData.email));
 
     const resData = await response.json();
+    const token = resData.token;
+    localStorage.setItem('jwtToken', token);
     return resData;
-});
-
-export const logoutUser = createAsyncThunk('auth/logoutUser', async (token, { dispatch }) => {
-    const response = await fetch(process.env.REACT_APP_SERVER_URL + '/auth/logout', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-            'Authorization': `Bearer ${token}`,
-        },
-    });
-
-    if (!response.ok) {
-        throw new Error('Could not logout user.');
-    }
 });
 
 export const registerUser = createAsyncThunk('auth/registerUser', async (authData, { dispatch }) => {
@@ -62,11 +50,11 @@ export const registerUser = createAsyncThunk('auth/registerUser', async (authDat
         throw new Error('Could not register user.');
     }
 
-    dispatch(fetchUserDetails(authData.email));
+    //dispatch(fetchUserDetails(authData.email));
 
     const resData = await response.json();
     const token = resData.token;
-    localStorage.setItem('token', token);
+    localStorage.setItem('jwtToken', token);
     const expiration = new Date();
     expiration.setHours(expiration.getHours() + 2);
     localStorage.setItem('expiration', expiration.toISOString());
@@ -84,19 +72,22 @@ const authSlice = createSlice({
         employerList: [],
     },
     reducers: {
+        setIsLoggedIn: (state, action) => {
+            state.isLoggedIn = action.payload;
+        },
+        logoutUser: (state, action) => {
+            state.user = null;
+            state.isLoggedIn = false;
+        },
     },
     extraReducers: (builder) => {
         builder
-            .addCase(logoutUser.fulfilled, (state, action) => {
-                    state.user = null;
-                    state.isLoggedIn = false;
-            })
             .addCase(loginUser.pending, (state) => {
                 state.status = 'loading';
             })
             .addCase(loginUser.fulfilled, (state, action) => {
                 state.status = 'idle';
-                state.user = action.payload;
+                state.user = action.payload.user;
                 state.isLoggedIn = true;
             })
             .addCase(loginUser.rejected, (state, action) => {
@@ -123,5 +114,7 @@ const authSlice = createSlice({
             });
     },
 });
+
+export const { setIsLoggedIn, logoutUser } = authSlice.actions;
 
 export default authSlice.reducer;
